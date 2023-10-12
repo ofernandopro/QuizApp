@@ -16,6 +16,10 @@
 		ED2D56B82AD852CA0086226C /* QuizAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2D56B72AD852CA0086226C /* QuizAppTests.swift */; };
 		ED2D56C22AD852CA0086226C /* QuizAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2D56C12AD852CA0086226C /* QuizAppUITests.swift */; };
 		ED2D56C42AD852CA0086226C /* QuizAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2D56C32AD852CA0086226C /* QuizAppUITestsLaunchTests.swift */; };
+		ED2D56D12AD857200086226C /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2D56D02AD857200086226C /* HomeVC.swift */; };
+		ED2D56D32AD857280086226C /* QuizVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2D56D22AD857280086226C /* QuizVC.swift */; };
+		ED2D56D52AD872620086226C /* Pergunta.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2D56D42AD872620086226C /* Pergunta.swift */; };
+		ED2D56D72AD886840086226C /* ParabensVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED2D56D62AD886840086226C /* ParabensVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +53,10 @@
 		ED2D56BD2AD852CA0086226C /* QuizAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuizAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED2D56C12AD852CA0086226C /* QuizAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizAppUITests.swift; sourceTree = "<group>"; };
 		ED2D56C32AD852CA0086226C /* QuizAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		ED2D56D02AD857200086226C /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
+		ED2D56D22AD857280086226C /* QuizVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizVC.swift; sourceTree = "<group>"; };
+		ED2D56D42AD872620086226C /* Pergunta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pergunta.swift; sourceTree = "<group>"; };
+		ED2D56D62AD886840086226C /* ParabensVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParabensVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +114,10 @@
 				ED2D56A92AD852CA0086226C /* Assets.xcassets */,
 				ED2D56AB2AD852CA0086226C /* LaunchScreen.storyboard */,
 				ED2D56AE2AD852CA0086226C /* Info.plist */,
+				ED2D56D02AD857200086226C /* HomeVC.swift */,
+				ED2D56D22AD857280086226C /* QuizVC.swift */,
+				ED2D56D42AD872620086226C /* Pergunta.swift */,
+				ED2D56D62AD886840086226C /* ParabensVC.swift */,
 			);
 			path = QuizApp;
 			sourceTree = "<group>";
@@ -259,6 +271,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				ED2D56A52AD852C90086226C /* ViewController.swift in Sources */,
+				ED2D56D52AD872620086226C /* Pergunta.swift in Sources */,
+				ED2D56D32AD857280086226C /* QuizVC.swift in Sources */,
+				ED2D56D72AD886840086226C /* ParabensVC.swift in Sources */,
+				ED2D56D12AD857200086226C /* HomeVC.swift in Sources */,
 				ED2D56A12AD852C90086226C /* AppDelegate.swift in Sources */,
 				ED2D56A32AD852C90086226C /* SceneDelegate.swift in Sources */,
 			);
