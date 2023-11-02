@@ -86,7 +86,7 @@ class EliminarAltsVC: UIViewController {
         qntAltsEliminadas = Int.random(in: 0..<4)
         card4Label.text = String(qntAltsEliminadas)
         delegate?.getQntAltsEliminadas(qntAltsEliminadas: qntAltsEliminadas)
-        
+         
         card1View.isUserInteractionEnabled = false
         card2View.isUserInteractionEnabled = false
         card3View.isUserInteractionEnabled = false
