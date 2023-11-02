@@ -27,7 +27,11 @@ class ParabensVC: UIViewController {
         
         if let valorGanho {
             
-            subtitleLabel.text = "Você ganhou R$\(valorGanho)!"
+            let valor = Utils.formatCurrencyString("\(valorGanho)")
+
+            if let valor {
+                subtitleLabel.text = "Você ganhou \(valor)!"
+            }
             
             if valorGanho == 0 {
                 subtitleLabel.text = "Você não ganhou nada!"

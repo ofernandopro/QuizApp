@@ -26,13 +26,20 @@ class HomeVC: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        maiorPontuacaoLabel.text = "R$0"
+        maiorPontuacaoLabel.text = "R$0,00"
         
-        var maiorPontuacaoSalva = UserDefaults.standard.integer(forKey: "maiorPontuacao")
+        let maiorPontuacaoSalva = UserDefaults.standard.integer(forKey: "maiorPontuacao")
         if maiorPontuacaoSalva > 0 {
-            maiorPontuacaoLabel.text = "R$\(maiorPontuacaoSalva)"
+            let result = NumberFormatter.localizedString(from: NSNumber(value: maiorPontuacaoSalva), number: .currency)
+            maiorPontuacaoLabel.text = "\(result)"
         } else {
-            maiorPontuacaoLabel.text = "R$0"
+            maiorPontuacaoLabel.text = "R$ 0,00"
+        }
+        
+        if maiorPontuacaoSalva == 1000000 {
+            maiorPontuacaoLabel.textColor = .systemYellow
+        } else {
+            maiorPontuacaoLabel.textColor = .black
         }
     }
     

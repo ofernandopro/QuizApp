@@ -7,17 +7,51 @@
 
 import UIKit
 
-class QuizVC: UIViewController {
+class QuizVC: UIViewController, EliminarAltsVCDelegate {
     
-    var perguntas = [
-        Pergunta(id: "001", pergunta: "Qual foi o primeiro presidente do Brasil?", alt1: "Marechal Deodoro Da Fonseca", alt2: "Getúlio Vargas", alt3: "Juscelino Kubistchek", alt4: "Floriano Peixoto", altCorreta: 1, nivel: 5, areaConhecimento: "História"),
-        Pergunta(id: "002", pergunta: "Qual é o quarto planeta mais distante do sol?", alt1: "Mercúrio", alt2: "Terra", alt3: "Vênus", alt4: "Marte", altCorreta: 4, nivel: 2, areaConhecimento: "Astronomia"),
-        Pergunta(id: "003", pergunta: "Qual o maior país do mundo?", alt1: "Brasil", alt2: "Rússia", alt3: "China", alt4: "Estados Unidos", altCorreta: 2, nivel: 2, areaConhecimento: "Geografia"),
-        Pergunta(id: "003", pergunta: "Quanto é 2 elevado a 6?", alt1: "16", alt2: "12", alt3: "64", alt4: "32", altCorreta: 3, nivel: 3, areaConhecimento: "Matemática"),
-        Pergunta(id: "004", pergunta: "Quantos ossos tem o corpo humano?", alt1: "206", alt2: "190", alt3: "64", alt4: "220", altCorreta: 1, nivel: 4, areaConhecimento: "Biologia"),
-        Pergunta(id: "004", pergunta: "Qual é o símbolo do Boro na Tabela Periódica?", alt1: "Br", alt2: "Bo", alt3: "B", alt4: "Ag", altCorreta: 3, nivel: 3, areaConhecimento: "Química"),
-        Pergunta(id: "004", pergunta: "Quanto é logaritmo de 8 na base 2?", alt1: "2", alt2: "4", alt3: "8", alt4: "3", altCorreta: 4, nivel: 4, areaConhecimento: "Matemática")
-    ]
+    func getQntAltsEliminadas(qntAltsEliminadas: Int) {
+        self.qntAltsEliminadas = qntAltsEliminadas
+        
+        print("0111 qntAltsEliminadas \(qntAltsEliminadas)")
+        
+        if qntAltsEliminadas == 0 {
+            return
+        } 
+        
+        var altsQuePodemSerEliminadas: [Int] = []
+        
+        for i in 1...4 {
+            if i != altCorreta {
+                altsQuePodemSerEliminadas.append(i)
+            }
+        }
+        
+        print("0111 altsQuePodemSerEliminadas \(altsQuePodemSerEliminadas)")
+        
+        for _ in 0..<qntAltsEliminadas {
+            print("0111 randomElement \(altsQuePodemSerEliminadas.randomElement() ?? 0)")
+            let altEliminada = altsQuePodemSerEliminadas.randomElement() ?? 0
+            altsQuePodemSerEliminadas = altsQuePodemSerEliminadas.filter { $0 != altEliminada }
+            print("0111 altsQuePodemSerEliminadas \(altsQuePodemSerEliminadas)")
+            eliminateAlt(alt: altEliminada)
+        }
+        
+        eliminarAltsView.backgroundColor = .systemGray
+        eliminarAltsView.isUserInteractionEnabled = false
+        
+    }
+    
+    func eliminateAlt(alt: Int) {
+        if alt == 1 {
+            alt1View.isHidden = true
+        } else if alt == 2 {
+            alt2View.isHidden = true
+        } else if alt == 3 {
+            alt3View.isHidden = true
+        } else if alt == 4 {
+            alt4View.isHidden = true
+        }
+    }
     
     @IBOutlet weak var startButton: UIButton!
     @IBOutlet weak var pararButton: UIButton!
@@ -27,6 +61,8 @@ class QuizVC: UIViewController {
     @IBOutlet weak var alt3Label: UILabel!
     @IBOutlet weak var alt4Label: UILabel!
     @IBOutlet weak var pontuacaoLabel: UILabel!
+    
+    @IBOutlet weak var startButtonBottomConstraint: NSLayoutConstraint!
 
     @IBOutlet weak var resultadoLabel: UILabel!
     
@@ -35,17 +71,23 @@ class QuizVC: UIViewController {
     @IBOutlet weak var alt3View: UIView!
     @IBOutlet weak var alt4View: UIView!
     
+    @IBOutlet weak var eliminarAltsView: UIView!
+    @IBOutlet weak var universitariosView: UIView!
+    
     var altSelected: Int = 0
     var pontuacaoNesteJogo = 0
     var numPergunta = 0
+    var altCorreta: Int = 0
+    
+    var viewModel: QuizViewModel = QuizViewModel()
     
     var valoresPerguntas = [500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 300000, 400000, 500000, 1000000]
     
     var randomInt: Int?
-    
     var foiRespondida: Bool = false
-    
     var respostaErrada = false
+    
+    var qntAltsEliminadas: Int = 0
     
     @IBAction func onTapSubmitButton(_ sender: Any) {
         
@@ -53,7 +95,7 @@ class QuizVC: UIViewController {
             return
         }
         
-        let altCorreta = perguntas[randomInt ?? 0].altCorreta
+        let altCorreta = viewModel.perguntas[randomInt ?? 0].altCorreta
         
         pintarViewCorretaEIncorretas(altCorreta: altCorreta, altSelected: altSelected)
         
@@ -62,11 +104,13 @@ class QuizVC: UIViewController {
         if !foiRespondida {
             
             if altSelected == altCorreta {
-                pontuacaoNesteJogo += perguntas[altCorreta-1].nivel * 20
-                resultadoLabel.text = "Resposta Correta! Você ganhou R$\(valoresPerguntas[numPergunta]) 😀"
+                pontuacaoNesteJogo += viewModel.perguntas[altCorreta-1].nivel * 20
+                let valor = NumberFormatter.localizedString(from: NSNumber(value: valoresPerguntas[numPergunta]), number: .currency)
+                resultadoLabel.text = "Resposta Correta! Você já ganhou \(valor) 😀"
                 resultadoLabel.textColor = .systemGreen
                 startButton.isHidden = false
                 pararButton.isHidden = false
+                startButtonBottomConstraint.constant = 80
                 pararButton.setTitle("Parar", for: .normal)
                 startButton.setTitle("Próxima Pergunta", for: .normal)
             } else {
@@ -74,6 +118,7 @@ class QuizVC: UIViewController {
                 resultadoLabel.textColor = .systemPink
                 startButton.isHidden = true
                 pararButton.isHidden = false
+                startButtonBottomConstraint.constant = 80
                 pararButton.setTitle("Voltar", for: .normal)
                 respostaErrada = true
             }
@@ -82,30 +127,66 @@ class QuizVC: UIViewController {
             
         } else {
             
-            if valoresPerguntas[numPergunta] > UserDefaults.standard.integer(forKey: "maiorPontuacao") {
-                UserDefaults.standard.setValue(valoresPerguntas[numPergunta], forKey: "maiorPontuacao")
+            if numPergunta < 12 {
+                if valoresPerguntas[numPergunta] > UserDefaults.standard.integer(forKey: "maiorPontuacao") {
+                    UserDefaults.standard.setValue(valoresPerguntas[numPergunta], forKey: "maiorPontuacao")
+                }
+            } else {
+                if 1000000 > UserDefaults.standard.integer(forKey: "maiorPontuacao") {
+                    UserDefaults.standard.setValue(1000000, forKey: "maiorPontuacao")
+                }
             }
+            
+            startButton.setTitle("Conferir", for: .normal)
             
             altSelected = 0
             numPergunta += 1
             
-            if numPergunta < 12 {
-                pontuacaoLabel.text = "Valendo R$\(valoresPerguntas[numPergunta])"
+            if numPergunta < 13 {
+                let valor = Utils.formatCurrencyString("\(valoresPerguntas[numPergunta])")
+                if let valor {
+                    pontuacaoLabel.text = "Valendo R$\(valor)"
+                }
                 resultadoLabel.isHidden = true
                 pararButton.isHidden = true
+                startButtonBottomConstraint.constant = 20
                 reiniciarCores()
                 sortearPergunta()
                 foiRespondida = false
+                
             } else {
                 irParaParabensVC()
             }
+            
+            alt1View.isHidden = false
+            alt2View.isHidden = false
+            alt3View.isHidden = false
+            alt4View.isHidden = false
             
         }
         
     }
     
     @IBAction func onTapPararButton(_ sender: Any) {
-        irParaParabensVC()
+        if respostaErrada {
+            irParaParabensVC()
+        } else {
+            showAlert(title: "Alerta", message: "Tem certeza que deseja parar?")
+        }
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+
+        alert.addAction(UIAlertAction(title: "Sim", style: .default, handler: { (action: UIAlertAction!) in
+            self.irParaParabensVC()
+          }))
+
+        alert.addAction(UIAlertAction(title: "Não", style: .cancel, handler: { (action: UIAlertAction!) in
+//            self.dismiss(animated: true)
+          }))
+
+        present(alert, animated: true, completion: nil)
     }
     
     func irParaParabensVC() {
@@ -119,7 +200,11 @@ class QuizVC: UIViewController {
                 vc.valorGanho = 0
             }
         } else {
-            vc.valorGanho = valoresPerguntas[numPergunta]
+            if numPergunta > 0 {
+                vc.valorGanho = valoresPerguntas[numPergunta-1]
+            } else {
+                vc.valorGanho = 0
+            }
         }
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -129,9 +214,11 @@ class QuizVC: UIViewController {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = true
         resultadoLabel.isHidden = true
-        pontuacaoLabel.text = "Valendo R$\(valoresPerguntas[numPergunta])"
+        let valor = NumberFormatter.localizedString(from: NSNumber(value: valoresPerguntas[numPergunta]), number: .currency)
+        pontuacaoLabel.text = "Valendo \(valor)"
         
         pararButton.isHidden = true
+        startButtonBottomConstraint.constant = 20
         
         sortearPergunta()
         addTapGestures()
@@ -141,15 +228,17 @@ class QuizVC: UIViewController {
 //        let antigoSorteado = self.randomInt
 //        var randomInt = 0
 //        repeat {
-            var randomInt = Int.random(in: 0..<perguntas.count)
+        var randomInt = Int.random(in: 0..<viewModel.perguntas.count)
 //        } while randomInt != antigoSorteado
         self.randomInt = randomInt
         
-        perguntaLabel.text = "\(perguntas[randomInt].pergunta)"
-        alt1Label.text = "\(perguntas[randomInt].alt1)"
-        alt2Label.text = "\(perguntas[randomInt].alt2)"
-        alt3Label.text = "\(perguntas[randomInt].alt3)"
-        alt4Label.text = "\(perguntas[randomInt].alt4)"
+        self.altCorreta = viewModel.perguntas[randomInt].altCorreta
+        
+        perguntaLabel.text = "\(viewModel.perguntas[randomInt].pergunta)"
+        alt1Label.text = "\(viewModel.perguntas[randomInt].alt1)"
+        alt2Label.text = "\(viewModel.perguntas[randomInt].alt2)"
+        alt3Label.text = "\(viewModel.perguntas[randomInt].alt3)"
+        alt4Label.text = "\(viewModel.perguntas[randomInt].alt4)"
     }
     
     func reiniciarCores() {
@@ -167,6 +256,10 @@ class QuizVC: UIViewController {
         alt3View.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTapAlt3View)))
         
         alt4View.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTapAlt4View)))
+        
+        eliminarAltsView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTapEliminarAltsView)))
+        
+        universitariosView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(onTapUniversitariosView)))
     }
     
     @objc func onTapAlt1View() {
@@ -203,6 +296,17 @@ class QuizVC: UIViewController {
         alt2View.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 66/255, alpha: 1)
         alt3View.backgroundColor = UIColor(red: 66/255, green: 66/255, blue: 66/255, alpha: 1)
         alt4View.backgroundColor = UIColor.lightGray
+    }
+    
+    @objc func onTapEliminarAltsView() {
+        let storyBoard = UIStoryboard(name: "Main", bundle: .main)
+        let vc = storyBoard.instantiateViewController(withIdentifier: "EliminarAltsVC") as! EliminarAltsVC
+        vc.delegate = self
+        present(vc, animated: true)
+    }
+    
+    @objc func onTapUniversitariosView() {
+        
     }
     
     func pintarViewCorretaEIncorretas(altCorreta: Int, altSelected: Int) {
@@ -256,7 +360,7 @@ class QuizVC: UIViewController {
                 }
             }
         }
-//        
+
     }
 
 }
